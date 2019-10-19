@@ -26,12 +26,8 @@ WEIGHT: .word 0
 
 _main:
 
-	    @ Assembly	program	to compute the maximum and minimum values
-        @ in  a	given set of non-zero unsigned integer numbers.	This program also	
-	    @ computes the total number of integers present in the set (other than
-        @ the terminating 0). This program scan through all the
-        @ elements of the set only once. Assumption is that, the memory locations starting at	
-        @ address data_items contains the given	set	of integers.	
+	@ Assembly program to determine which element ,in the series, has the largest weight and store the number in NUM and its weight in WIEGHT.
+        @ Assume that the memory locations starting at address data_start contains the give set of integers. 	
 
 		LDR R3,=data_start        @Load address data_start into R3
 		LDR R9,=data_end          @Load address data_end into R9
@@ -42,8 +38,8 @@ _main:
 		MOV R0, R6
 
 CountOnes:                        @CountOnes is a subroutine to count number of ones in number.
-		MOV R2, #0
-LOOP:	SUB R1, R0, #1
+		MOV R2, #0        @ R2 stores intermediate results while counting ones
+LOOP:	SUB R1, R0, #1            @ n AND n-1 clears the first 1 from right (LSB side). 
 		AND R0, R1
 		ADD  R2, R2, #1
 		CMP R0, #0
@@ -55,11 +51,11 @@ LOOP:	SUB R1, R0, #1
 		MOVGT R7, R2
 		
 		ADD R3, R3, #4            @Read the next element from data.
-		CMP R3, R9
-		BGT OUT
-		LDR R6,[R3]	
+		CMP R3, R9                @ Compare to know if last element data
+		BGT OUT                   
+		LDR R6,[R3]	          @Read next element 
 		MOV R0, R6
-		BL CountOnes
+		BL CountOnes           @ call subroutine to count ones on new number fetched from memory 
 OUT:
 		LDR R5,=NUM            @Load address maximum into R5
 		STR R8,[R5]            @Store maximum weight value R8 into NUM.
